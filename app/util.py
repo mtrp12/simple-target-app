@@ -29,6 +29,7 @@ def validate_data_type(attrs: dict) -> list:
     return invalid_attrs
 
 
+# TODO: turn into dict
 def get_message_from_exception(e: Exception):
     if str(e) == "UNIQUE constraint failed: USERS.USERNAME":
         return make_response("Username already exists", 409)
@@ -38,4 +39,6 @@ def get_message_from_exception(e: Exception):
         return make_response("lastname cannot be empty", 409)
     elif str(e) == "NOT NULL constraint failed: USERS.USERNAME":
         return make_response("username cannot be empty", 409)
+    elif str(e) == "CHECK constraint failed: USERS":
+        return make_response("application required attribute cannot be empty", 409)
     return make_response(str(e), 400)
