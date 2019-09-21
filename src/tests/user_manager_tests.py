@@ -90,7 +90,12 @@ class UserManagerTests(unittest.TestCase):
             self.assertEqual({'Admin': 'R1', 'Developer': 'R2', 'Agent': 'R3',
                               'Manager': 'R4'}, roles)
 
-    def test_that_add_role_works(self):
+    def test_that_get_user_roles_works(self):
+        with UserManager(test_db) as manager:
+            roles = manager.get_user_roles(id_)
+            self.assertEqual({'R1', 'R2'}, roles)
+
+    def test_that_add_roles_works(self):
         user = User(7, roles={"R1", "R2", "R4"})
         with UserManager(test_db) as manager:
             self.assertTrue(manager.add_roles(user))
@@ -98,9 +103,25 @@ class UserManagerTests(unittest.TestCase):
             roles = manager.get_user_roles(user.id)
             self.assertEqual(user.roles, roles)
 
-    def test_that_get_user_roles_works(self):
+            # TODO: add duplicate role
+
+    def test_that_delete_roles_works(self):
+        user = User(id_, roles={'R1', 'R2'})
         with UserManager(test_db) as manager:
-            roles = manager.get_user_roles(id_)
-            self.assertEqual({'R1', 'R2'}, roles)
+            self.assertTrue(manager.delete_roles(user))
+
+            user = User(2, roles={'R1', 'R4'})
+            self.assertRaisesRegex(ValueError, "unprovisioned", manager.delete_roles, user)
+
+            user = User(2, roles={'R1', 'R2', 'R3'})
+            self.assertTrue(manager.delete_roles(user))
+
+            user = User(7, roles={'R1'})
+            self.assertRaisesRegex(ValueError, "unprovisioned", manager.delete_roles, user)
+
+            user = User(6, roles={'R5'})
+            self.assertRaisesRegex(ValueError, "unprovisioned", manager.delete_roles, user)
+
+
 
 

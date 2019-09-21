@@ -77,16 +77,28 @@ class UserManager:
                 params = [(user.id, roleid) for roleid in user.roles]
                 try:
                     obj.executemany(sql, params)
+                    self.conn.commit()
+                    return True
                 except sqlite3.Error as e:
                     self.conn.rollback()
                     raise e
 
-                self.conn.commit()
-                return True
+            def delete_roles(self, user: User) -> bool:
+                roles = self.get_user_roles(user.id)
+                not_owned_roles = user.roles - roles
+                if not_owned_roles != set():
+                    raise ValueError(f"Removing unprovisioned roles failed: {not_owned_roles}")
 
-
-            def delete_role(self, user: User, roles: tuple) -> bool:
-                pass
+                sql = "DELETE FROM USER_ROLES WHERE USER_ID=? AND ROLE_ID=?"
+                obj = self.conn.cursor()
+                params = [(user.id, roleid) for roleid in user.roles]
+                try:
+                    obj.executemany(sql, params)
+                    self.conn.commit()
+                    return True
+                except sqlite3.Error as e:
+                    self.conn.rollback()
+                    raise e
 
             def get_role_list(self) -> dict:
                 sql = "SELECT ROLE_NAME, ROLE_ID FROM ROLES"
