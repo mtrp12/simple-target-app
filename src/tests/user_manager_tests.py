@@ -103,22 +103,32 @@ class UserManagerTests(unittest.TestCase):
             roles = manager.get_user_roles(user.id)
             self.assertEqual(user.roles, roles)
 
-            # TODO: add duplicate role
+            # add duplicate roles
+            user = User(7, roles={"R3", "R2"})
+            self.assertRaisesRegex(ValueError, "Duplicate", manager.add_roles, user)
+
+            roles = manager.get_user_roles(user.id)
+            self.assertEqual({"R1", "R2", "R4"}, roles)
 
     def test_that_delete_roles_works(self):
         user = User(id_, roles={'R1', 'R2'})
         with UserManager(test_db) as manager:
+            # remove all roles
             self.assertTrue(manager.delete_roles(user))
 
+            # remove unprovisioned roles
             user = User(2, roles={'R1', 'R4'})
             self.assertRaisesRegex(ValueError, "unprovisioned", manager.delete_roles, user)
 
+            # remove all roles after trying to remove unprovisioned roles
             user = User(2, roles={'R1', 'R2', 'R3'})
             self.assertTrue(manager.delete_roles(user))
 
+            # remove roles from user who has no roles
             user = User(7, roles={'R1'})
             self.assertRaisesRegex(ValueError, "unprovisioned", manager.delete_roles, user)
 
+            # remove non existing role
             user = User(6, roles={'R5'})
             self.assertRaisesRegex(ValueError, "unprovisioned", manager.delete_roles, user)
 
