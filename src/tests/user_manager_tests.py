@@ -84,4 +84,10 @@ class UserManagerTests(unittest.TestCase):
             self.assertEqual({'Information Technology': 'IT', 'Finance': 'FN', 'Marketing': 'MK',
                               'Sales': 'SL', 'Customer Care': 'CC'}, orgs)
 
+    def test_that_get_role_list_works(self):
+        with UserManager(test_db) as manager:
+            roles = manager.get_role_list()
+            self.assertEqual({'Admin': 'R1', 'Developer': 'R2', 'Agent': 'R3',
+                              'Manager': 'R4'}, roles)
+
 

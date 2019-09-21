@@ -74,8 +74,12 @@ class UserManager:
             def delete_role(self, user: User, roles: tuple) -> bool:
                 pass
 
-            def get_role_list(self) -> list:
-                pass
+            def get_role_list(self) -> dict:
+                sql = "SELECT ROLE_NAME, ROLE_ID FROM ROLES"
+                obj = self.conn.cursor()
+                obj.execute(sql)
+                rows = obj.fetchall()
+                return {role_name: role_id for (role_name, role_id) in rows}
 
             def get_org_list(self) -> dict:
                 sql = "SELECT ORG_NAME, ORG_ID FROM ORGS"
