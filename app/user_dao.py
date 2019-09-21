@@ -2,13 +2,13 @@ import sqlite3
 import time
 import itertools
 
-from src.app.user import User
+from app.user import User
 
 _db_name = ""
 
 
 class UserManager:
-    def __init__(self, db_name="user_data.db"):
+    def __init__(self, db_name):
         global _db_name
         _db_name = db_name
 

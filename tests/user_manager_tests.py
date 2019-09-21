@@ -1,9 +1,10 @@
 import unittest
 import sqlite3
 import os
+import app.config as cfg
 
-from src.app.user import User
-from src.app.user_dao import UserManager
+from app.user import User
+from app.user_dao import UserManager
 
 username = "usrt"
 firstname = "Fname"
@@ -15,7 +16,7 @@ organization = "IT"
 status = "DEACTIVE"
 id_ = 1
 
-test_db = "user_data_test.db"
+test_db = cfg.test_db
 
 
 class UserManagerTests(unittest.TestCase):
@@ -33,7 +34,7 @@ class UserManagerTests(unittest.TestCase):
         os.remove(test_db)
 
     def test_that_connection_works(self):
-        with UserManager() as manager:
+        with UserManager(test_db) as manager:
             pass
 
     def test_that_create_user_works(self):

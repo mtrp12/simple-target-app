@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
-cd src/app
+# configs are also in app.config file
+export FLASK_APP=run
 export FLASK_ENV=development
 flask run --port 5000

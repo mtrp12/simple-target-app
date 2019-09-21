@@ -1,10 +1,10 @@
-import config as cfg
+import app.config as cfg
 
-from flask import Flask, jsonify, make_response
+from flask import jsonify, make_response
 
 from app.user_dao import UserManager
 
-app = Flask(__name__)
+from app.main import app
 
 
 @app.route("/")
@@ -69,11 +69,7 @@ def org_list():
 
 @app.route("/api/v1/role/list")
 def role_list():
-    with UserManager(cfg.database) as manager:
+    with UserManager(cfg.main_db) as manager:
         roles = manager.get_role_list()
         response = make_response(jsonify(roles), 200)
         return response
-
-
-if __name__ == "__main__":
-    app.run(debug=True, port=5000)
