@@ -45,7 +45,7 @@ class UserManagerTests(unittest.TestCase):
     def test_that_get_user_details_work(self):
         user_orig = User(id_=id_, username='usr1', firstname='User', lastname='One',
                          mobile='0123456701', email='usr1@example.com', empid='0001',
-                         roles=(), organization='IT', last_update=1)
+                         roles=None, organization='IT', last_update=1)
 
         with UserManager(test_db) as manager:
             user = manager.get_user_details_by_id(id_)
@@ -54,7 +54,7 @@ class UserManagerTests(unittest.TestCase):
     def test_that_update_user_works(self):
         user = User(id_=id_, username='usr11', firstname='User1', lastname='One1',
                     mobile='01234567011', email='usr11@example.com', empid='00011',
-                    roles=(), organization='MK', last_update=1)
+                    roles=None, organization='MK', last_update=1)
 
         with UserManager(test_db) as manager:
             id = manager.update_user(user)
