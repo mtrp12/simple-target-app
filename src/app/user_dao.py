@@ -36,6 +36,7 @@ class UserManager:
                 rows = obj.fetchall()
 
                 # row 0, col 0
+                # update time stamp not required here, since default is 1
                 return rows[0][0]
 
             def delete_user(self, user: User) -> str:
@@ -43,6 +44,7 @@ class UserManager:
                 sql = "DELETE FROM USERS WHERE ID=?"
                 obj.execute(sql, (user.id,))
                 self.conn.commit()
+
                 return user.id
 
             def update_user(self, user: User) -> str:
@@ -78,7 +80,8 @@ class UserManager:
                 params = [(user.id, roleid) for roleid in user.roles]
                 try:
                     obj.executemany(sql, params)
-                    self.conn.commit()
+                    self.update_timestamp(user.id)
+                    self.conn.commit()    # may be redundant
                     return True
                 except sqlite3.Error as e:
                     self.conn.rollback()
@@ -95,6 +98,7 @@ class UserManager:
                 params = [(user.id, roleid) for roleid in user.roles]
                 try:
                     obj.executemany(sql, params)
+                    self.update_timestamp(user.id)
                     self.conn.commit()
                     return True
                 except sqlite3.Error as e:
