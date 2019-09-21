@@ -27,8 +27,8 @@ class UserManager:
             def create_user(self, user: User) -> str:
                 obj = self.conn.cursor()
                 sql = "INSERT INTO USERS(username, firstname, lastname, mobile, email, " \
-                      "empid, organization) VALUES (?,?,?,?,?,?,?)"
-                obj.execute(sql, user.params()[1:8])
+                      "empid, organization, status) VALUES (?,?,?,?,?,?,?,?)"
+                obj.execute(sql, user.params()[1:9])
                 self.conn.commit()
 
                 sql = "SELECT ID FROM USERS WHERE USERNAME=?"
@@ -51,7 +51,7 @@ class UserManager:
                 cols = []
                 values = []
                 for (key, value) in user.__dict__.items():
-                    if value is None or key in ['roles', 'id', 'last_update']:
+                    if value is None or key in ['roles', 'id', 'status', 'last_update']:
                         continue
                     cols.append(f"{key.upper()}=?")
                     values.append(value)
@@ -68,6 +68,14 @@ class UserManager:
                 self.conn.commit()
 
                 return user.id
+
+            def enable_user(self, user: User):
+                # TODO:
+                pass
+
+            def disable_user(self, user: User):
+                # TODO:
+                pass
 
             def add_roles(self, user: User) -> bool:
                 roles = self.get_user_roles(user.id)
@@ -135,7 +143,7 @@ class UserManager:
 
                 user = None
                 if row is not None:
-                    user = User(row[0], *row[1:8], last_update=row[8])
+                    user = User(row[0], *row[1:9], last_update=row[9])
                 return user
 
             def get_user_roles(self, id_) -> set:

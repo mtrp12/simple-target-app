@@ -12,6 +12,7 @@ mobile = "01234"
 email = "usrt@example.com"
 empid = "0123t"
 organization = "IT"
+status = "DEACTIVE"
 id_ = 1
 
 test_db = "user_data_test.db"
@@ -36,7 +37,8 @@ class UserManagerTests(unittest.TestCase):
             pass
 
     def test_that_create_user_works(self):
-        user = User(None, username, firstname, lastname, mobile, email, empid, organization)
+        user = User(None, username, firstname, lastname, mobile, email, empid, organization,
+                    status)
 
         with UserManager(test_db) as manager:
             id = manager.create_user(user)
@@ -45,7 +47,7 @@ class UserManagerTests(unittest.TestCase):
     def test_that_get_user_details_work(self):
         user_orig = User(id_=id_, username='usr1', firstname='User', lastname='One',
                          mobile='0123456701', email='usr1@example.com', empid='0001',
-                         roles=None, organization='IT', last_update=1)
+                         roles=None, organization='IT', status='ACTIVE', last_update=1)
 
         with UserManager(test_db) as manager:
             user = manager.get_user_details_by_id(id_)
@@ -54,7 +56,7 @@ class UserManagerTests(unittest.TestCase):
     def test_that_update_user_works(self):
         user = User(id_=id_, username='usr11', firstname='User1', lastname='One1',
                     mobile='01234567011', email='usr11@example.com', empid='00011',
-                    roles=None, organization='MK', last_update=1)
+                    roles=None, organization='MK', status='ACTIVE', last_update=1)
 
         with UserManager(test_db) as manager:
             id = manager.update_user(user)

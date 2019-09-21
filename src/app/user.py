@@ -1,7 +1,8 @@
 class User:
     def __init__(self, id_, username: str = None, firstname: str = None, lastname: str = None,
                  mobile: str = None, email: str = None, empid: str = None,
-                 organization: str = None, roles: set = None, last_update=0):
+                 organization: str = None, status: str = None, roles: set = None,
+                 last_update=0):
         self.id = id_
         self.username = username
         self.firstname = firstname
@@ -10,13 +11,15 @@ class User:
         self.email = email
         self.empid = empid
         self.organization = organization
+        self.status = status
         self.roles = roles
         self.last_update = last_update
 
     def params(self):
         return (
             self.id, self.username, self.firstname, self.lastname, self.mobile,
-            self.email, self.empid, self.organization, self.roles, self.last_update
+            self.email, self.empid, self.organization, self.status, self.roles,
+            self.last_update
         )
 
     def __eq__(self, other):
@@ -38,4 +41,5 @@ class User:
                f"empid='{self.empid}'," \
                f"roles={self.roles}," \
                f"organization='{self.organization}'," \
+               f"status='{self.status}'" \
                f"last_update={self.last_update})"
