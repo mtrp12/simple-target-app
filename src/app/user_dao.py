@@ -17,6 +17,7 @@ class UserManager:
             def __init__(self):
                 # open db connection
                 self.conn = sqlite3.connect(_db_name)
+                self.conn.execute("PRAGMA foreign_keys = 1")
 
             def close(self):
                 # close db connection

@@ -110,6 +110,10 @@ class UserManagerTests(unittest.TestCase):
             roles = manager.get_user_roles(user.id)
             self.assertEqual({"R1", "R2", "R4"}, roles)
 
+            # add non existing role
+            user = User(7, roles={"R5"})
+            self.assertRaises(sqlite3.Error, manager.add_roles, user)
+
     def test_that_delete_roles_works(self):
         user = User(id_, roles={'R1', 'R2'})
         with UserManager(test_db) as manager:
