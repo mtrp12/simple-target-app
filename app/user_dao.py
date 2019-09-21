@@ -39,13 +39,11 @@ class UserManager:
                 # update time stamp not required here, since default is 1
                 return rows[0][0]
 
-            def delete_user(self, user: User) -> str:
+            def delete_user(self, user: User):
                 obj = self.conn.cursor()
                 sql = "DELETE FROM USERS WHERE ID=?"
                 obj.execute(sql, (user.id,))
                 self.conn.commit()
-
-                return user.id
 
             def update_user(self, user: User) -> str:
                 cols = []

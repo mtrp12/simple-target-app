@@ -51,7 +51,7 @@ def create():
         return make_response(jsonify(ret_json), 201)
 
 
-@app.route("/api/v1/user/update", methods=["POST"])
+@app.route("/api/v1/user/update", methods=["PUT"])
 def update():
     req_json = request.get_json()
 
@@ -82,18 +82,28 @@ def update():
         except Exception as e:
             return util.get_message_from_exception(e)
 
-    ret_json = {"id": user.id}
-    return make_response(jsonify(ret_json), 200)
+    return make_response("", 204)
 
 
-@app.route("/api/v1/user/delete")
+@app.route("/api/v1/user/delete", methods=["DELETE"])
 def delete():
-    pass
+    user_id = request.args.get('id')
+    if user_id is None:
+        return make_response("'id' parameter not found", 400)
+
+    with UserManager(cfg.main_db) as manager:
+        user = User(user_id)
+        try:
+            manager.delete_user(user)
+            return make_response("", 204)
+        except Exception as e:
+            print(str(e))
+            return make_response("Delete failed", 409)
 
 
-@app.route("/api/v1/user/enable", methods=["POST"])
+@app.route("/api/v1/user/enable", methods=["PUT"])
 def enable():
-    user_id = request.args['id']
+    user_id = request.args.get('id')
     if user_id is None:
         return make_response("'id' parameter not found", 400)
 
@@ -101,14 +111,14 @@ def enable():
         user = User(user_id, status='ACTIVE')
         n_modified = manager.change_user_status(user)
         if n_modified == 1:
-            return make_response("SUCCESS: 1 user enabled", 200)
+            return make_response("", 204)
         else:
-            return make_response(f"FAIL: {n_modified} user enabled", 404)
+            return make_response(f"{n_modified} user enabled", 404)
 
 
-@app.route("/api/v1/user/disable")
+@app.route("/api/v1/user/disable", methods=["PUT"])
 def disable():
-    user_id = request.args['id']
+    user_id = request.args.get('id')
     if user_id is None:
         return make_response("'id' parameter not found", 400)
 
@@ -116,9 +126,9 @@ def disable():
         user = User(user_id, status='DEACTIVE')
         n_modified = manager.change_user_status(user)
         if n_modified == 1:
-            return make_response("SUCCESS: 1 user disabled", 200)
+            return make_response("", 204)
         else:
-            return make_response(f"FAIL: {n_modified} user disabled", 404)
+            return make_response(f"{n_modified} user disabled", 404)
 
 
 @app.route("/api/v1/user/addroles")
@@ -152,7 +162,7 @@ def user_detail():
 
 @app.route("/api/v1/user/roles", methods=["POST"])
 def user_roles():
-    user_id = request.args['id']
+    user_id = request.args.get('id')
     if user_id is None:
         return make_response("'id' parameter not found", 400)
 
