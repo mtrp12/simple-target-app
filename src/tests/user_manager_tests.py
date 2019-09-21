@@ -1,4 +1,6 @@
 import unittest
+import sqlite3
+import os
 
 from src.app.user import User
 from src.app.user_dao import UserManager
@@ -9,11 +11,25 @@ lastname = "Lname"
 mobile = "01234"
 email = "usrt@example.com"
 empid = "0123t"
-organization="IT"
-id_ = 0
+organization = "IT"
+id_ = 1
+
+test_db = "user_data_test.db"
 
 
 class UserManagerTests(unittest.TestCase):
+
+    def setUp(self) -> None:
+        with open("setup_db.sql", "r") as file:
+            script = file.read()
+
+        conn = sqlite3.connect(test_db)
+        conn.executescript(script)
+        conn.commit()
+        conn.close()
+
+    def tearDown(self) -> None:
+        os.remove(test_db)
 
     def test_that_connection_works(self):
         with UserManager() as manager:
@@ -22,16 +38,38 @@ class UserManagerTests(unittest.TestCase):
     def test_that_create_user_works(self):
         user = User(username, firstname, lastname, mobile, email, empid, organization)
 
-        with UserManager() as manager:
+        with UserManager(test_db) as manager:
             id = manager.create_user(user)
-            print(f"ID={id}")
-            global id_
-            id_ = id
+            self.assertEqual(8, id)
+
+    def test_that_get_user_details_work(self):
+        user_orig = User(id_=id_, username='usr1', firstname='User', lastname='One',
+                         mobile='0123456701', email='usr1@example.com', empid='0001',
+                         roles=(), organization='IT', last_update=1)
+
+        with UserManager(test_db) as manager:
+            user = manager.get_user_details_by_id(id_)
+            self.assertEqual(user_orig, user)
+
+    def test_that_update_user_works(self):
+        user = User(id_=id_, username='usr11', firstname='User1', lastname='One1',
+                    mobile='01234567011', email='usr11@example.com', empid='00011',
+                    roles=(), organization='MK', last_update=1)
+
+        with UserManager(test_db) as manager:
+            id = manager.update_user(user)
+            self.assertEqual(id_, id)
+
+            changed_user = manager.get_user_details_by_id(id_)
+            self.assertEqual(user, changed_user)
 
     def test_that_delete_user_works(self):
         user = User(username, id_=id_)
 
-        with UserManager() as manager:
+        with UserManager(test_db) as manager:
             id = manager.delete_user(user)
             self.assertEqual(id_, id)
+
+            user_deleted = manager.get_user_details_by_id(id_)
+            self.assertIsNone(user_deleted)
 

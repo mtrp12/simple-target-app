@@ -1,14 +1,21 @@
 import sqlite3
+import time
 
 from src.app.user import User
 
+_db_name = ""
+
 
 class UserManager:
-    def __enter__(self, db_name="user_data.db"):
+    def __init__(self, db_name="user_data.db"):
+        global _db_name
+        _db_name = db_name
+
+    def __enter__(self):
         class DBHandler:
             def __init__(self):
                 # open db connection
-                self.conn = sqlite3.connect(db_name)
+                self.conn = sqlite3.connect(_db_name)
 
             def close(self):
                 # close db connection
@@ -37,7 +44,28 @@ class UserManager:
                 return user.id
 
             def update_user(self, user: User) -> str:
-                pass
+                cols = []
+                values = []
+                for (key, value) in user.__dict__.items():
+                    if value is None or key in ['roles', 'id', 'last_update']:
+                        continue
+                    cols.append(f"{key.upper()}=?")
+                    values.append(value)
+                cols.append("LAST_UPDATE=?")
+                values.append(time.time_ns())
+
+                sql = "UPDATE USERS " \
+                      f"SET {','.join(cols)} " \
+                      "WHERE ID=?"
+                values.append(user.id)
+
+                # print(sql)
+
+                obj = self.conn.cursor()
+                obj.execute(sql, values)
+                self.conn.commit()
+
+                return user.id
 
             def add_role(self, user: User, roles: tuple) -> bool:
                 pass
@@ -54,8 +82,16 @@ class UserManager:
             def get_username_list(self) -> list:
                 pass
 
-            def get_user_details_by_username(self, username: str) -> User:
-                pass
+            def get_user_details_by_id(self, id_: str) -> User:
+                sql = "SELECT * FROM USERS WHERE ID=?"
+                obj = self.conn.cursor()
+                obj.execute(sql, (id_,))
+                row = obj.fetchone()
+
+                user = None
+                if row is not None:
+                    user = User(*row[1:8], last_update=row[8], id_=row[0])
+                return user
 
             def update_timestamp(self):
                 pass

@@ -19,15 +19,23 @@ class User:
             self.email, self.empid, self.organization, self.roles, self.last_update
         )
 
+    def __eq__(self, other):
+        for (key, value) in self.__dict__.items():
+            if key == 'last_update':
+                continue
+            if value != getattr(other, key):
+                return False
+        return True
+
     def __repr__(self):
         return f"User(" \
-               f"id={self.id}," \
-               f"username={self.username}," \
-               f"firstname={self.firstname}," \
-               f"lastname={self.lastname}," \
-               f"mobile={self.mobile}," \
-               f"email={self.email}," \
-               f"empid={self.empid}," \
+               f"id_={self.id}," \
+               f"username='{self.username}'," \
+               f"firstname='{self.firstname}'," \
+               f"lastname='{self.lastname}'," \
+               f"mobile='{self.mobile}'," \
+               f"email='{self.email}'," \
+               f"empid='{self.empid}'," \
                f"roles={self.roles}," \
-               f"organization={self.organization}," \
+               f"organization='{self.organization}'," \
                f"last_update={self.last_update})"
