@@ -13,9 +13,38 @@ def hello():
     return "Hello"
 
 
-@app.route(f"/api/v1/user/create")
+@app.route(f"/api/v1/user/create", methods=["POST"])
 def create():
-    pass
+    data = request.get_json()
+    # print(data)
+    # # check if required attrs are supplied
+    attrs = set(data.keys())
+    if cfg.req_attrs - attrs != set():
+        return make_response(f"missing required attributes: {cfg.req_attrs - attrs}", 400)
+
+    # check if invalid attributes supplied
+    valid_attrs = cfg.all_attrs - {"last_update", "id", "roles"}
+    if attrs - valid_attrs != set():
+        return make_response(f"invalid attributes: {attrs - valid_attrs}", 400)
+
+    user = User(None)
+    for (name, value) in data.items():
+        setattr(user, name, value)
+
+    with UserManager(cfg.main_db) as manager:
+        try:
+            user_id = manager.create_user(user)
+        except Exception as e:
+            if str(e) == "UNIQUE constraint failed: USERS.USERNAME":
+                return make_response("Username already exists", 409)
+            elif str(e) == "FOREIGN KEY constraint failed":
+                return make_response(f"Invalid organization: {user.organization}", 404)
+            elif str(e) == "NOT NULL constraint failed: USERS.LASTNAME":
+                return make_response("lastname is null", 409)
+            return make_response(str(e), 400)
+
+        ret_json = {"id": user_id}
+        return make_response(jsonify(ret_json), 201)
 
 
 @app.route("/api/v1/user/update")

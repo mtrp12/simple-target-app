@@ -1,7 +1,7 @@
 class User:
     def __init__(self, id_, username: str = None, firstname: str = None, lastname: str = None,
                  mobile: str = None, email: str = None, empid: str = None,
-                 organization: str = None, status: str = None, roles: set = None,
+                 organization: str = None, status: str = "ACTIVE", roles: set = None,
                  last_update=0):
         self.id = id_
         self.username = username
