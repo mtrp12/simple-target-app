@@ -142,8 +142,14 @@ class UserManager:
 
                 return set(itertools.chain(*rows))
 
-            def update_timestamp(self):
-                pass
+            def update_timestamp(self, id_: str) -> int:
+                sql = "UPDATE USERS SET LAST_UPDATE=? WHERE ID=?"
+                obj = self.conn.cursor()
+                update_time = time.time_ns()
+                obj.execute(sql, (update_time, id_))
+                self.conn.commit()
+
+                return update_time
 
         self.db_handler = DBHandler()
         return self.db_handler

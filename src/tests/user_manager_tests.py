@@ -136,6 +136,13 @@ class UserManagerTests(unittest.TestCase):
             user = User(6, roles={'R5'})
             self.assertRaisesRegex(ValueError, "unprovisioned", manager.delete_roles, user)
 
+    def test_update_timestamp(self):
+        with UserManager(test_db) as manager:
+            last_update = manager.update_timestamp(id_)
+
+            user = manager.get_user_details_by_id(id_)
+            self.assertEqual(last_update, user.last_update)
+
 
 
 
