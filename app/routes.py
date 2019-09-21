@@ -1,4 +1,9 @@
-from flask import Flask
+import config as cfg
+
+from flask import Flask, jsonify, make_response
+
+from app.user_dao import UserManager
+
 app = Flask(__name__)
 
 
@@ -64,4 +69,11 @@ def org_list():
 
 @app.route("/api/v1/role/list")
 def role_list():
-    pass
+    with UserManager(cfg.database) as manager:
+        roles = manager.get_role_list()
+        response = make_response(jsonify(roles), 200)
+        return response
+
+
+if __name__ == "__main__":
+    app.run(debug=True, port=5000)
