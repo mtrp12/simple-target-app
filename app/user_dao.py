@@ -69,17 +69,19 @@ class UserManager:
 
                 return user.id
 
-            def change_user_status(self, user: User):
+            def change_user_status(self, user: User) -> int:
                 if user.status not in ["ACTIVE", "DEACTIVE"]:
                     raise ValueError(f"Invalid status: {user.status}")
 
                 sql = "UPDATE USERS SET STATUS=? WHERE ID=?"
                 obj = self.conn.cursor()
                 obj.execute(sql, (user.status, user.id))
+                if obj.rowcount != 1:
+                    return obj.rowcount
                 self.update_timestamp(user.id)
                 self.conn.commit()
 
-                return user.id
+                return 1
 
             def add_roles(self, user: User) -> bool:
                 roles = self.get_user_roles(user.id)
