@@ -1,5 +1,6 @@
 import sqlite3
 import time
+import itertools
 
 from src.app.user import User
 
@@ -79,8 +80,12 @@ class UserManager:
             def get_org_list(self) -> list:
                 pass
 
-            def get_username_list(self) -> list:
-                pass
+            def get_userid_list(self) -> list:
+                sql = "SELECT ID FROM USERS"
+                obj = self.conn.cursor()
+                obj.execute(sql)
+                rows = obj.fetchall()
+                return list(itertools.chain(*rows))
 
             def get_user_details_by_id(self, id_: str) -> User:
                 sql = "SELECT * FROM USERS WHERE ID=?"

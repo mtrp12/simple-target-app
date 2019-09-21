@@ -73,3 +73,8 @@ class UserManagerTests(unittest.TestCase):
             user_deleted = manager.get_user_details_by_id(id_)
             self.assertIsNone(user_deleted)
 
+    def test_that_get_user_list_works(self):
+        with UserManager(test_db) as manager:
+            usr_ids = manager.get_userid_list()
+            self.assertEqual([1, 2, 3, 4, 5, 6, 7], usr_ids)
+
