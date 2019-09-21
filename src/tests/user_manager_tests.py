@@ -90,7 +90,17 @@ class UserManagerTests(unittest.TestCase):
             self.assertEqual({'Admin': 'R1', 'Developer': 'R2', 'Agent': 'R3',
                               'Manager': 'R4'}, roles)
 
-    # def test_that_add_role_works(self):
-    #     user = User()
+    def test_that_add_role_works(self):
+        user = User(7, roles={"R1", "R2", "R4"})
+        with UserManager(test_db) as manager:
+            self.assertTrue(manager.add_roles(user))
+
+            roles = manager.get_user_roles(user.id)
+            self.assertEqual(user.roles, roles)
+
+    def test_that_get_user_roles_works(self):
+        with UserManager(test_db) as manager:
+            roles = manager.get_user_roles(id_)
+            self.assertEqual({'R1', 'R2'}, roles)
 
 

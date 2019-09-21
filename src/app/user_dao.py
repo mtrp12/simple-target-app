@@ -66,16 +66,20 @@ class UserManager:
 
                 return user.id
 
-            def add_role(self, user: User) -> bool:
-                sql = "IF NOT EXISTS SELECT 1 FROM USER_ROLES WHERE USER_ID=? AND ROLE_ID=?" \
-                      "INSERT INTO USER_ROLES(USER_ID, ROLE_ID) VALUES (?,?)"
+            def add_roles(self, user: User) -> bool:
+                roles = self.get_user_roles(user.id)
+                duplicates = roles.intersection(user.roles)
+                if duplicates != set():
+                    raise ValueError(f"Duplicate Roles: {duplicates}")
+
+                sql = "INSERT INTO USER_ROLES(USER_ID, ROLE_ID) VALUES (?,?)"
                 obj = self.conn.cursor()
-                params = [(user.id, roleid) * 2 for roleid in user.roles]
+                params = [(user.id, roleid) for roleid in user.roles]
                 try:
                     obj.executemany(sql, params)
-                except sqlite3.Error:
+                except sqlite3.Error as e:
                     self.conn.rollback()
-                    return False
+                    raise e
 
                 self.conn.commit()
                 return True
@@ -116,6 +120,14 @@ class UserManager:
                 if row is not None:
                     user = User(row[0], *row[1:8], last_update=row[8])
                 return user
+
+            def get_user_roles(self, id_) -> set:
+                sql = "SELECT ROLE_ID FROM USER_ROLES WHERE USER_ID=?"
+                obj = self.conn.cursor()
+                obj.execute(sql, (id_,))
+                rows = obj.fetchall()
+
+                return set(itertools.chain(*rows))
 
             def update_timestamp(self):
                 pass
