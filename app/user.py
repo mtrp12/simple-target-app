@@ -1,6 +1,6 @@
 class User:
-    def __init__(self, id_: int, username: str = None, firstname: str = None, lastname: str = None,
-                 mobile: str = None, email: str = None, empid: str = None,
+    def __init__(self, id_: int = None, username: str = None, firstname: str = None,
+                 lastname: str = None, mobile: str = None, email: str = None, empid: str = None,
                  organization: str = None, status: str = "ACTIVE", roles: set = None,
                  last_update=0):
         self.id = id_

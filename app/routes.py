@@ -2,6 +2,7 @@ import app.config as cfg
 
 from flask import jsonify, make_response, request
 
+from app import util
 from app.user import User
 from app.user_dao import UserManager
 
@@ -15,41 +16,74 @@ def hello():
 
 @app.route(f"/api/v1/user/create", methods=["POST"])
 def create():
-    data = request.get_json()
-    # print(data)
+    req_json = request.get_json()
+
+    # TODO: test filter
+    # filter null
+    create_attrs = {key: value for (key, value) in req_json.items() if value is not None}
+
     # # check if required attrs are supplied
-    attrs = set(data.keys())
+    attrs = set(create_attrs.keys())
     if cfg.req_attrs - attrs != set():
         return make_response(f"missing required attributes: {cfg.req_attrs - attrs}", 400)
 
     # check if invalid attributes supplied
-    valid_attrs = cfg.all_attrs - {"last_update", "id", "roles"}
-    if attrs - valid_attrs != set():
-        return make_response(f"invalid attributes: {attrs - valid_attrs}", 400)
+    if attrs - cfg.create_attrs != set():
+        return make_response(f"invalid attributes: {attrs - cfg.create_attrs}", 400)
 
-    user = User(None)
-    for (name, value) in data.items():
+    # TODO: test this validation
+    # filter invalid attribute date types
+    invalid_attrs = util.validate_data_type(create_attrs)
+    if len(invalid_attrs) > 0:
+        return make_response(f"invalid data type for {invalid_attrs}", 400)
+
+    user = User()
+    for (name, value) in req_json.items():
         setattr(user, name, value)
 
     with UserManager(cfg.main_db) as manager:
         try:
             user_id = manager.create_user(user)
         except Exception as e:
-            if str(e) == "UNIQUE constraint failed: USERS.USERNAME":
-                return make_response("Username already exists", 409)
-            elif str(e) == "FOREIGN KEY constraint failed":
-                return make_response(f"Invalid organization: {user.organization}", 404)
-            elif str(e) == "NOT NULL constraint failed: USERS.LASTNAME":
-                return make_response("lastname is null", 409)
-            return make_response(str(e), 400)
+            return util.get_message_from_exception(e)
 
         ret_json = {"id": user_id}
         return make_response(jsonify(ret_json), 201)
 
 
-@app.route("/api/v1/user/update")
+@app.route("/api/v1/user/update", methods=["POST"])
 def update():
-    pass
+    req_json = request.get_json()
+
+    # filter null
+    update_attrs = {key: value for (key, value) in req_json.items() if value is not None}
+
+    # filter invalid attribute names
+    if set(update_attrs.keys()) - cfg.update_attrs != set():
+        return make_response(f"invalid attributes: {set(update_attrs.keys()) - cfg.update_attrs}", 400)
+
+    # filter invalid attribute date types
+    invalid_attrs = util.validate_data_type(update_attrs)
+    if len(invalid_attrs) > 0:
+        return make_response(f"invalid data type for {invalid_attrs}", 400)
+
+    # make sure mandatory attributes available, in this case 'id'
+    if "id" not in update_attrs.keys():
+        return make_response(f"missing value for required attribute: 'id'", 400)
+
+    # perform update
+    user = User()
+    for (name, value) in update_attrs.items():
+        setattr(user, name, value)
+
+    with UserManager(cfg.main_db) as manager:
+        try:
+            manager.update_user(user)
+        except Exception as e:
+            return util.get_message_from_exception(e)
+
+    ret_json = {"id": user.id}
+    return make_response(jsonify(ret_json), 200)
 
 
 @app.route("/api/v1/user/delete")
