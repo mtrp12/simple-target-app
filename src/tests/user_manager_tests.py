@@ -78,3 +78,10 @@ class UserManagerTests(unittest.TestCase):
             usr_ids = manager.get_userid_list()
             self.assertEqual([1, 2, 3, 4, 5, 6, 7], usr_ids)
 
+    def test_that_get_org_list_works(self):
+        with UserManager(test_db) as manager:
+            orgs = manager.get_org_list()
+            self.assertEqual({'Information Technology': 'IT', 'Finance': 'FN', 'Marketing': 'MK',
+                              'Sales': 'SL', 'Customer Care': 'CC'}, orgs)
+
+

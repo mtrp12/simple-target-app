@@ -77,8 +77,13 @@ class UserManager:
             def get_role_list(self) -> list:
                 pass
 
-            def get_org_list(self) -> list:
-                pass
+            def get_org_list(self) -> dict:
+                sql = "SELECT ORG_NAME, ORG_ID FROM ORGS"
+                obj = self.conn.cursor()
+                obj.execute(sql)
+                rows = obj.fetchall()
+
+                return {org_name: org_id for (org_name, org_id) in rows}
 
             def get_userid_list(self) -> list:
                 sql = "SELECT ID FROM USERS"
