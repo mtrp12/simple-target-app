@@ -36,7 +36,7 @@ class UserManagerTests(unittest.TestCase):
             pass
 
     def test_that_create_user_works(self):
-        user = User(username, firstname, lastname, mobile, email, empid, organization)
+        user = User(None, username, firstname, lastname, mobile, email, empid, organization)
 
         with UserManager(test_db) as manager:
             id = manager.create_user(user)
@@ -64,7 +64,7 @@ class UserManagerTests(unittest.TestCase):
             self.assertEqual(user, changed_user)
 
     def test_that_delete_user_works(self):
-        user = User(username, id_=id_)
+        user = User(id_, username)
 
         with UserManager(test_db) as manager:
             id = manager.delete_user(user)
@@ -89,5 +89,8 @@ class UserManagerTests(unittest.TestCase):
             roles = manager.get_role_list()
             self.assertEqual({'Admin': 'R1', 'Developer': 'R2', 'Agent': 'R3',
                               'Manager': 'R4'}, roles)
+
+    # def test_that_add_role_works(self):
+    #     user = User()
 
 

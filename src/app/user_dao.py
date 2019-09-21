@@ -60,16 +60,26 @@ class UserManager:
                       "WHERE ID=?"
                 values.append(user.id)
 
-                # print(sql)
-
                 obj = self.conn.cursor()
                 obj.execute(sql, values)
                 self.conn.commit()
 
                 return user.id
 
-            def add_role(self, user: User, roles: tuple) -> bool:
-                pass
+            def add_role(self, user: User) -> bool:
+                sql = "IF NOT EXISTS SELECT 1 FROM USER_ROLES WHERE USER_ID=? AND ROLE_ID=?" \
+                      "INSERT INTO USER_ROLES(USER_ID, ROLE_ID) VALUES (?,?)"
+                obj = self.conn.cursor()
+                params = [(user.id, roleid) * 2 for roleid in user.roles]
+                try:
+                    obj.executemany(sql, params)
+                except sqlite3.Error:
+                    self.conn.rollback()
+                    return False
+
+                self.conn.commit()
+                return True
+
 
             def delete_role(self, user: User, roles: tuple) -> bool:
                 pass
@@ -104,7 +114,7 @@ class UserManager:
 
                 user = None
                 if row is not None:
-                    user = User(*row[1:8], last_update=row[8], id_=row[0])
+                    user = User(row[0], *row[1:8], last_update=row[8])
                 return user
 
             def update_timestamp(self):
