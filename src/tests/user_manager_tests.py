@@ -145,6 +145,24 @@ class UserManagerTests(unittest.TestCase):
             user = manager.get_user_details_by_id(id_)
             self.assertEqual(last_update, user.last_update)
 
+    def test_change_user_status(self):
+        with UserManager(test_db) as manager:
+            user = User(id_, status="DEACTIVE")
+            manager.change_user_status(user)
+            user_updated = manager.get_user_details_by_id(user.id)
+            self.assertEqual(user.status, user_updated.status)
+
+            user.status = "ACTIVE"
+            manager.change_user_status(user)
+            user_updated = manager.get_user_details_by_id(user.id)
+            self.assertEqual(user.status, user_updated.status)
+
+            # test that invalid status raises exception
+            user.status = "INVALID"
+            self.assertRaisesRegex(ValueError, "Invalid status", manager.change_user_status,
+                                   user)
+
+
 
 
 
