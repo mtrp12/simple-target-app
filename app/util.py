@@ -14,7 +14,7 @@ data_type_map = {
     "empid": str,
     "organization": str,
     "status": str,
-    "roles": List[str],
+    "roles": list,
     "last_update": int
 }
 
@@ -34,7 +34,7 @@ def get_message_from_exception(e: Exception):
     if str(e) == "UNIQUE constraint failed: USERS.USERNAME":
         return make_response("Username already exists", 409)
     elif str(e) == "FOREIGN KEY constraint failed":
-        return make_response("Organization not found", 404)
+        return make_response("Value not found", 404)
     elif str(e) == "NOT NULL constraint failed: USERS.LASTNAME":
         return make_response("lastname cannot be empty", 409)
     elif str(e) == "NOT NULL constraint failed: USERS.USERNAME":

@@ -131,9 +131,25 @@ def disable():
             return make_response(f"{n_modified} user disabled", 404)
 
 
-@app.route("/api/v1/user/addroles")
+@app.route("/api/v1/user/addroles", methods=["POST"])
 def add_roles():
-    pass
+    user_id = request.args.get("id")
+    if user_id is None:
+        return make_response("'id' parameter not found", 400)
+
+    req_json = request.get_json()
+    invalid_attrs = util.validate_data_type({"roles": req_json})
+    if len(invalid_attrs) > 0:
+        return make_response(f"invalid data type for {invalid_attrs}", 400)
+
+    with UserManager(cfg.main_db) as manager:
+        user = User(user_id, roles=req_json)
+        try:
+            manager.add_roles(user)
+            return make_response("", 201)
+        except Exception as e:
+            print(str(e))
+            return make_response(util.get_message_from_exception(e), 409)
 
 
 @app.route("/api/v1/user/removeroles")
