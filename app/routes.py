@@ -152,9 +152,25 @@ def add_roles():
             return make_response(util.get_message_from_exception(e), 409)
 
 
-@app.route("/api/v1/user/removeroles")
+@app.route("/api/v1/user/removeroles", methods=["DELETE"])
 def remove_roles():
-    pass
+    user_id = request.args.get("id")
+    if user_id is None:
+        return make_response("'id' parameter not found", 400)
+
+    req_json = request.get_json()
+    invalid_attrs = util.validate_data_type({"roles": req_json})
+    if len(invalid_attrs) > 0:
+        return make_response(f"invalid data type for {invalid_attrs}", 400)
+
+    with UserManager(cfg.main_db) as manager:
+        user = User(user_id, roles=set(req_json))
+        try:
+            manager.delete_roles(user)
+            return make_response("", 204)
+        except Exception as e:
+            print(str(e))
+            return make_response(util.get_message_from_exception(e), 409)
 
 
 @app.route("/api/v1/user/list")
