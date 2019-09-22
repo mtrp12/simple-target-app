@@ -70,9 +70,7 @@ class UserManagerTests(unittest.TestCase):
         user = User(id_, username)
 
         with UserManager(test_db) as manager:
-            id = manager.delete_user(user)
-            self.assertEqual(id_, id)
-
+            manager.delete_user(user)
             user_deleted = manager.get_user_details_by_id(id_)
             self.assertIsNone(user_deleted)
 
