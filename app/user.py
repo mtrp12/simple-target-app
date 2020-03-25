@@ -12,7 +12,7 @@ class User:
         self.empid = empid
         self.organization = organization
         self.status = status
-        self.roles = roles
+        self.roles = roles if roles is not None else "__UNUSED__"
         self.last_update = last_update
 
     def params(self):
