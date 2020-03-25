@@ -53,9 +53,9 @@ $ ./start_app.sh
 
 **URL:** http://localhost:5000/api/v1/user/create
 
-**Method: **POST
+**Method:** POST
 
-**HTTP Response Code: **201 CREATED
+**HTTP Response Code:** 201 CREATED
 
 **Attributes:**
 
@@ -94,9 +94,9 @@ $ ./start_app.sh
 
 **URL:** http://localhost:5000/api/v1/user/update
 
-**Method: **PUT
+**Method:** PUT
 
-**HTTP Response Code: **204 NO CONTENT
+**HTTP Response Code:** 204 NO CONTENT
 
 **Attributes:**
 
@@ -124,11 +124,11 @@ $ ./start_app.sh
 
 **URL:** http://localhost:5000/api/v1/user/delete
 
-**Method: **DELETE
+**Method:** DELETE
 
-**HTTP Response Code: **204 NO CONTENT
+**HTTP Response Code:** 204 NO CONTENT
 
-**Argument: **id
+**Argument:** id
 
 **Sample Request**
 
@@ -142,11 +142,11 @@ curl --request DELETE 'http://localhost:5000/api/v1/user/delete?id=8'
 
 **URL:** http://localhost:5000/api/v1/user/enable
 
-**Method: **PUT
+**Method:** PUT
 
-**HTTP Response Code: **204 NO CONTENT
+**HTTP Response Code:** 204 NO CONTENT
 
-**Argument: **id
+**Argument:** id
 
 **Sample Request**
 
@@ -160,11 +160,11 @@ curl --request PUT 'http://localhost:5000/api/v1/user/enable?id=1'
 
 **URL:** http://localhost:5000/api/v1/user/disable
 
-**Method: **PUT
+**Method:** PUT
 
-**HTTP Response Code: **204 NO CONTENT
+**HTTP Response Code:** 204 NO CONTENT
 
-**Argument: **id
+**Argument:** id
 
 **Sample Request**
 
@@ -176,11 +176,11 @@ curl --request PUT 'http://localhost:5000/api/v1/user/disable?id=1'
 
 **URL:** http://localhost:5000/api/v1/user/addroles
 
-**Method: **POST
+**Method:** POST
 
-**HTTP Response Code: **201 CREATED
+**HTTP Response Code:** 201 CREATED
 
-**Argument: **id
+**Argument:** id
 
 **Sample Request**
 
@@ -202,11 +202,11 @@ curl --request POST 'http://localhost:5000/api/v1/user/addroles?id=1' \
 
 **URL:** http://localhost:5000/api/v1/user/removeroles
 
-**Method: **DELETE
+**Method:** DELETE
 
-**HTTP Response Code: **204 NO CONTENT
+**HTTP Response Code:** 204 NO CONTENT
 
-**Argument: **id
+**Argument:** id
 
 **Sample Request**
 
@@ -228,11 +228,11 @@ curl --request DELETE 'http://localhost:5000/api/v1/user/removeroles?id=1' \
 
 **URL:** http://localhost:5000/api/v1/user/details
 
-**Method: **GET
+**Method:** GET
 
-**HTTP Response Code: **200 OK
+**HTTP Response Code:** 200 OK
 
-**Argument: **id
+**Argument:** id
 
 **Sample Request**
 
@@ -264,11 +264,11 @@ curl --request GET 'http://localhost:5000/api/v1/user/details?id=1'
 
 **URL:** http://localhost:5000/api/v1/user/details
 
-**Method: **GET
+**Method:** GET
 
-**HTTP Response Code: **200 OK
+**HTTP Response Code:** 200 OK
 
-**Argument: **id
+**Argument:** id
 
 **Sample Request**
 
@@ -294,9 +294,9 @@ curl --request GET 'http://localhost:5000/api/v1/user/roles?id=1'
 
 **URL:** http://localhost:5000/api/v1/user/list
 
-**Method: **GET
+**Method:** GET
 
-**HTTP Response Code: **200 OK
+**HTTP Response Code:** 200 OK
 
 **Sample Request**
 
@@ -325,9 +325,9 @@ curl --request GET 'http://localhost:5000/api/v1/user/list'
 
 **URL:** http://localhost:5000/api/v1/org/list
 
-**Method: **GET
+**Method:** GET
 
-**HTTP Response Code: **200 OK
+**HTTP Response Code:** 200 OK
 
 **Sample Request**
 
@@ -354,9 +354,9 @@ curl --request GET 'http://localhost:5000/api/v1/org/list'
 
 **URL:** http://localhost:5000/api/v1/role/list
 
-**Method: **GET
+**Method:** GET
 
-**HTTP Response Code: **200 OK
+**HTTP Response Code:** 200 OK
 
 **Sample Request**
 
