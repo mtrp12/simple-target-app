@@ -380,5 +380,6 @@ curl --request GET 'http://localhost:5000/api/v1/role/list'
 
 ## TODO
 
+	- API authentication
 	- API test
 	- docker control script
