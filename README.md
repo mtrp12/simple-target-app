@@ -4,7 +4,46 @@ This is a simple application with necessary common user management functionality
 
 
 
-## How To Run
+## Requirement
+
+	- python 3
+	- pip
+	- pip install flask==1.1.1
+
+## How To:
+
+**Prepare Application**
+
+​	Run the following commands to ensure application faces no problem and create a prepopulated database. This is one time operation.
+
+```
+$ ./run_tests.sh
+$ ./setup_db.py
+```
+
+​	If everything is ok, the output of **run_tests.sh** should be like below
+
+![image-20200325213619205](./docs/screenshot1.png)
+
+
+
+**Start Application**
+
+```
+$ ./start_app.sh
+```
+
+
+
+**Start Fresh**
+
+​	Delete the sqlite3 database under data folder. Afterwards, create database and start application.
+
+```
+$ rm data/user_data.db
+$ ./setup_db.py
+$ ./start_app.sh
+```
 
 
 
@@ -339,7 +378,7 @@ curl --request GET 'http://localhost:5000/api/v1/role/list'
 
 
 
+## TODO
 
-
-
-
+	- API test
+	- docker control script
