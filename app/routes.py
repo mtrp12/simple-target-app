@@ -181,7 +181,7 @@ def list_users():
         return response
 
 
-@app.route("/api/v1/user/details", methods=["POST"])
+@app.route("/api/v1/user/details", methods=["GET"])
 def user_detail():
     user_id = request.args.get('id')
     if user_id is None:
@@ -189,10 +189,11 @@ def user_detail():
 
     with UserManager(cfg.main_db) as manager:
         user = manager.get_user_details_by_id(user_id)
+        print(user.__dict__)
         return make_response(jsonify(user.__dict__), 200)
 
 
-@app.route("/api/v1/user/roles", methods=["POST"])
+@app.route("/api/v1/user/roles", methods=["GET"])
 def user_roles():
     user_id = request.args.get('id')
     if user_id is None:
