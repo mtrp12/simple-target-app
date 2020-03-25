@@ -1,5 +1,5 @@
 FROM python:3-slim
-RUN pip install flask
+RUN pip install flask==1.1.1
 COPY app /simple_app/app/
 COPY docs /simple_app/docs/
 COPY tests /simple_app/tests/
